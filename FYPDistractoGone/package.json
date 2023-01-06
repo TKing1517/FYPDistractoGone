@@ -2,15 +2,20 @@
   "name": "fypdistractogone",
   "version": "1.0.0",
   "description": "FYP artifact",
-  "main": "main.js",
+  "main": "Controller/main.js",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder"
+  },
+  "build": {
+    "win": {
+      "requestedExecutionLevel": "highestAvailable"
+    }
   },
   "author": "K2054427",
   "license": "MIT",
   "devDependencies": {
     "electron": "^22.0.0",
-    "electron-builder": "^23.6.0"
+    "electron-builder": "^22.10.3"
   }
 }

@@ -4,20 +4,26 @@ const fs = require('fs')
 
 const createWindow = () => {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true
+    }
   })
 
-  win.loadFile('Screens/index.html')
+  win.loadFile('View/HomePage.html')
   
-  //blockWebsite('floatingqrcode.com')
-  //unblockWebsite('onesquareminesweeper.com')
-
+  win.webContents.openDevTools();
   win.setMenu(null)
 }
 
 app.whenReady().then(() => {
   createWindow()
+})
+
+ipcMain.on('submit-website', (event, website) => {
+  console.log(website)
+  blockWebsite(website)
 })
 
 
@@ -33,23 +39,23 @@ const blockWebsite = (website) => {
 }
 
 const unblockWebsite = (website) => {
-  // Read the contents of the hosts file
+  // Read content
   fs.readFile('C:\\Windows\\System32\\drivers\\etc\\hosts', 'utf8', (error, data) => {
     if (error) {
       console.error(`Error: ${error}`)
       return
     }
 
-    // Split the contents of the file into an array of lines
+    // Split contents on new line
     const lines = data.split('\n')
 
-    // Filter out the lines that contain the website
+    // Find lines that contain website
     const filteredLines = lines.filter((line) => !line.includes(website))
 
-    // Join the filtered lines into a string
+    // Join split lines into string
     const modifiedData = filteredLines.join('\n')
 
-    // Write the modified data back to the file
+    // Write back to hosts file
     fs.writeFile('C:\\Windows\\System32\\drivers\\etc\\hosts', modifiedData, (error) => {
       if (error) {
         console.error(`${error}`)
