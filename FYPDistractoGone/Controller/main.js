@@ -4,6 +4,7 @@ const fs = require('fs')
 
 
 let websitesURLs = [];
+let canQuit = true;
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -14,37 +15,51 @@ const createWindow = () => {
     }
   })
 
-  
-
   win.loadFile('View/HomePage.html')
+  win.on('close', (event) => {
+    if (!canQuit) {
+      event.preventDefault();
+    }
+  });
   // unblockWebsite('om')
-  win.webContents.openDevTools();
+  //win.webContents.openDevTools();
   win.setMenu(null)
 }
+
 
 app.whenReady().then(() => {
   createWindow()
 })
 
+// app.on('before-quit', (event) => {
+//   if (!canQuit) {
+//     event.preventDefault();
+//   }
+// });
+
+
+
 ipcMain.on('submit-website', (event, website) => {
   const hostname = new URL(website).hostname;
   websitesURLs.push(hostname);
   console.log(websitesURLs)
-
+  event.reply('websitesURLs', websitesURLs);
 })
 
 ipcMain.on('submit-websiteU', (event, website) => {
   const hostname = new URL(website).hostname;
   websitesURLs = websitesURLs.filter((item) => item !== hostname);
   console.log(websitesURLs)
-
+  event.reply('websitesURLs', websitesURLs);
 })
 
 ipcMain.on('BeginRestriction', (event, input) => {
   console.log(input)
   console.log(websitesURLs)
   blockWebsite(websitesURLs)
+  canQuit = false;
   const timeoutId = setTimeout(function() {
+    canQuit = true;
     unblockWebsite(websitesURLs)
   }, 30000);
 })

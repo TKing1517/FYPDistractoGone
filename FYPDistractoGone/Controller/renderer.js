@@ -20,3 +20,14 @@ BeginRestriction.addEventListener('submit', (event) => {
     ipcRenderer.send('BeginRestriction', input)
 })
 
+
+ipcRenderer.on('websitesURLs', (event, websitesURLs) => {
+    const ul = document.getElementById('ListOfURLs')
+    ul.innerHTML = "";
+    websitesURLs.forEach((website) => {
+      const li = document.createElement('li');
+      li.textContent = website;
+      ul.appendChild(li);
+    });
+});
+
