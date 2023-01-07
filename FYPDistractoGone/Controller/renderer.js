@@ -16,8 +16,8 @@ DeleteWebsiteInput.addEventListener('submit', (event) => {
 const BeginRestriction = document.getElementById('BeginRestriction')
 BeginRestriction.addEventListener('submit', (event) => {
     event.preventDefault()
-    const input = "document.getElementById('InputWebsiteU').value"
-    ipcRenderer.send('BeginRestriction', input)
+
+    ipcRenderer.send('BeginRestriction')
 })
 
 
