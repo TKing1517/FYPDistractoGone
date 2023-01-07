@@ -109,26 +109,24 @@ ipcMain.on('BeginRestriction', (event) => {
 
 
 const blockWebsite = (website) => {
+  
+  // // Close all Chrome windows
+  // exec('taskkill /im chrome.exe /f', (error, stdout, stderr) => {
+  //   if (error) {
+  //     console.error(`${error}`);
+  //     return;
+  //   }
+  //   console.log(`Success: ${stdout}`);
+  // });
 
-  // Close all Chrome windows
-exec('taskkill /im chrome.exe /f', (error, stdout, stderr) => {
-  if (error) {
-    console.error(`${error}`);
-    return;
-  }
-  console.log(`Success: ${stdout}`);
-});
-
-
-
-// Close all Firefox windows
-exec('taskkill /im firefox.exe /f', (error, stdout, stderr) => {
-  if (error) {
-    console.error(`${error}`);
-    return;
-  }
-  console.log(`Success: ${stdout}`);
-});
+  // // Close all Firefox windows
+  // exec('taskkill /im firefox.exe /f', (error, stdout, stderr) => {
+  //   if (error) {
+  //     console.error(`${error}`);
+  //     return;
+  //   }
+  //   console.log(`Success: ${stdout}`);
+  // });
 
   const command = `echo 127.0.0.1 `
   if (currentOS === 'win32') {
