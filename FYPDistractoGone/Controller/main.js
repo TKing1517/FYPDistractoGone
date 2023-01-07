@@ -31,6 +31,8 @@ const createWindow = () => {
       event.preventDefault();
     }
   });
+  unblockApp('C:\\Program Files (x86)\\Steam\\Steam.exe')
+  //blockApp('C:\\Program Files (x86)\\Steam\\Steam.exe')
   // unblockWebsite('om')
   //win.webContents.openDevTools();
   win.setMenu(null)
@@ -106,6 +108,60 @@ ipcMain.on('BeginRestriction', (event) => {
   }
   
 })
+
+const unblockApp = (appPath) => {
+
+  // Execute a command to unblock the application
+  if (process.platform === 'win32') {
+    // On Windows, use the 'netsh' utility to remove the firewall rule
+    exec(`netsh advfirewall firewall delete rule name="Block ${appPath}"`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(error)
+      } else {
+        console.log(`Unblocked ${appPath}`)
+      }
+    })
+  } else if (process.platform === 'darwin') {
+    // On macOS, use the 'pfctl' utility to remove the packet filter rule
+    exec(`echo "block drop out log quick on en0 from any to any" | sudo pfctl -df -`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(error)
+      } else {
+        console.log(`Unblocked ${appPath}`)
+      }
+    })
+  } else {
+    console.log('Unsupported platform')
+  }
+}
+
+
+
+const blockApp = (appPath) => {
+  
+  // Execute a command to block the application
+  if (process.platform === 'win32') {
+    // On Windows, use the 'netsh' utility to add a firewall rule
+    exec(`netsh advfirewall firewall add rule name="Block ${appPath}" dir=out action=block program="${appPath}"`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(error)
+      } else {
+        console.log(`Blocked ${appPath}`)
+      }
+    })
+  } else if (process.platform === 'darwin') {
+    // On macOS, use the 'pfctl' utility to add a packet filter rule
+    exec(`echo "block drop out log quick on en0 from any to any" | sudo pfctl -ef -`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(error)
+      } else {
+        console.log(`Blocked ${appPath}`)
+      }
+    })
+  } else {
+    console.log('Unsupported platform')
+  }
+}
 
 
 const blockWebsite = (website) => {
