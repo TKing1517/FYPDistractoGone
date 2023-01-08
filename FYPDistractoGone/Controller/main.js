@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const { exec } = require('child_process')
 const fs = require('fs')
 
-
+//TODO-TRY TO FIND OUT HOW TO USE APP REGISTRY TO BLOCK APPLICATIONS
 let websitesURLs = [];
 let canQuit = true;
 
@@ -31,7 +31,7 @@ const createWindow = () => {
       event.preventDefault();
     }
   });
-  unblockApp('C:\\Program Files (x86)\\Steam\\Steam.exe')
+  //unblockApp('C:\\Program Files (x86)\\Steam\\Steam.exe')
   //blockApp('C:\\Program Files (x86)\\Steam\\Steam.exe')
   // unblockWebsite('om')
   //win.webContents.openDevTools();
@@ -65,6 +65,10 @@ ipcMain.on('submit-website', (event, website) => {
     event.reply('websitesURLs', websitesURLs);
   }
   
+})
+
+ipcMain.on('RefreshList', (event) => {
+  event.reply('websitesURLs', websitesURLs);
 })
 
 ipcMain.on('submit-websiteU', (event, website) => {

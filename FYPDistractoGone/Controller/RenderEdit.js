@@ -13,13 +13,6 @@ DeleteWebsiteInput.addEventListener('submit', (event) => {
     ipcRenderer.send('submit-websiteU', input)
 })
 
-const BeginRestriction = document.getElementById('BeginRestriction')
-BeginRestriction.addEventListener('submit', (event) => {
-    event.preventDefault()
-
-    ipcRenderer.send('BeginRestriction')
-})
-
 
 ipcRenderer.on('websitesURLs', (event, websitesURLs) => {
     const ul = document.getElementById('ListOfURLs')
@@ -31,3 +24,6 @@ ipcRenderer.on('websitesURLs', (event, websitesURLs) => {
     });
 });
 
+function RefreshList() {
+    ipcRenderer.send('RefreshList')
+}

@@ -1,10 +1,24 @@
 <!DOCTYPE html>
 <html>
-    <body>
-        <form action="HomePage_Controller.php" method="POST">
-            <label for="fname">Website to be blocked:</label>
-            <input type="text" id="fname" name="fname"><br><br>
-            <input name="SignOutButton" type="text" value="Navigate Page">
+    <head>
+        <meta charset="UTF-8">
+        <title id="EditBlockListTitle">Add to Website</title>
+    </head>
+    <body onload="RefreshList()">
+        <a href="HomePage.html">Navigate to Home Page</a>
+        <form id="SubmitWebsiteInput">
+          <label for="name">Website to be blocked:</label>
+          <input type="text" id="InputWebsite" required>
+          <button id="InputWebsitebtn" type="submit" style="background-color:#e74c3c">Submit</button>
         </form>
+    
+        <form id="DeleteWebsiteInput">
+          <label for="name">Website to be unlocked:</label>
+          <input type="text" id="InputWebsiteU" required>
+          <button id="InputWebsiteUbtn" type="submit" style="background-color:#e74c3c">Submit</button>
+        </form>
+
+        <ul id="ListOfURLs"></ul>
+        <script src='../Controller/RenderEdit.js'></script>
     </body>
 </html>

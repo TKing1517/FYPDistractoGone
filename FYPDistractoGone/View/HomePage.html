@@ -1,29 +1,22 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title id="TempTitle">Add to Website</title>
-  </head>
-  <body>
-    <form id="SubmitWebsiteInput">
-      <label for="name">Website to be blocked:</label>
-      <input type="text" id="InputWebsite" required>
-      <button id="InputWebsitebtn" type="submit" style="background-color:#e74c3c">Submit</button>
-    </form>
 
-    <form id="DeleteWebsiteInput">
-      <label for="name">Website to be unlocked:</label>
-      <input type="text" id="InputWebsiteU" required>
-      <button id="InputWebsiteUbtn" type="submit" style="background-color:#e74c3c">Submit</button>
-    </form>
+    <head>
+      <meta charset="UTF-8">
+      <title id="HomePageTitle">Home Page</title>
+    </head>
 
-    <form id="BeginRestriction">
-      <label for="name">Begin Restriction?(for 30 seconds || PRESSING THIS BUTTON WILL CLOSE YOUR BROWSER)</label>
-      <button id="InputBeginRestrictionbtn" type="submit" style="background-color:#e74c3c">Submit</button>
-    </form>
-    <ul id="ListOfURLs"></ul>
-    <script src='../Controller/renderer.js'></script>
-    
+    <body>
 
-  </body>
+
+      <a href="EditBlockList.html">Navigate to Edit Block List Page</a>
+
+      <form id="BeginRestriction">
+        <label for="name">Begin Restriction?(for 30 seconds || PRESSING THIS BUTTON WILL CLOSE YOUR BROWSER)</label>
+        <button id="InputBeginRestrictionbtn" type="submit" style="background-color:#e74c3c">Submit</button>
+      </form>
+
+    <script src='../Controller/RenderHome.js'></script>
+  
+    </body>
 </html>
