@@ -2,11 +2,12 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const { exec } = require('child_process')
 const fs = require('fs')
 
-//TODO-TRY TO FIND OUT HOW TO USE APP REGISTRY TO BLOCK APPLICATIONS
 let websitesURLs = [];
 let canQuit = true;
+let appsToBlock = [];
 
 const currentOS = process.platform;
+
 
 if (currentOS === 'darwin') {
   console.log('Running on macOS');
@@ -15,6 +16,7 @@ if (currentOS === 'darwin') {
 } else {
   console.log('Running on', currentOS);
 }
+
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -43,13 +45,6 @@ app.whenReady().then(() => {
   createWindow()
 })
 
-// app.on('before-quit', (event) => {
-//   if (!canQuit) {
-//     event.preventDefault();
-//   }
-// });
-
-
 
 ipcMain.on('submit-website', (event, website) => {
   const hostname = new URL(website).hostname;
@@ -67,8 +62,20 @@ ipcMain.on('submit-website', (event, website) => {
   
 })
 
-ipcMain.on('RefreshList', (event) => {
-  event.reply('websitesURLs', websitesURLs);
+ipcMain.on('submit-app', (event, appName) => {
+  appName = appName + '.exe'
+  if (appsToBlock.includes(appName)) {
+    dialog.showMessageBox({
+      type: 'info',
+      message: 'This App is already noted',
+      buttons: ['OK']
+    })
+  } else {
+    appsToBlock.push(appName);
+    console.log(appsToBlock)
+    event.reply('appsToBlock', appsToBlock);
+  }
+  
 })
 
 ipcMain.on('submit-websiteU', (event, website) => {
@@ -86,6 +93,27 @@ ipcMain.on('submit-websiteU', (event, website) => {
   }
   
 })
+
+ipcMain.on('submit-appU', (event, appName) => {
+  appName = appName + '.exe'
+  if (appsToBlock.includes(appName)) {
+    appsToBlock = appsToBlock.filter((item) => item !== appName);
+    console.log(appsToBlock)
+    event.reply('appsToBlock', appsToBlock);
+  } else {
+    dialog.showMessageBox({
+      type: 'info',
+      message: 'This App is not noted',
+      buttons: ['OK']
+    })
+  }
+})
+
+ipcMain.on('RefreshList', (event) => {
+  event.reply('websitesURLs', websitesURLs);
+  event.reply('appsToBlock', appsToBlock);
+})
+
 
 ipcMain.on('BeginRestriction', (event) => {
 
@@ -105,6 +133,8 @@ ipcMain.on('BeginRestriction', (event) => {
     console.log(websitesURLs)
     blockWebsite(websitesURLs)
     canQuit = false;
+    //The restriction will begin and last for 30 seconds, 
+    //after which the restriction will end and the user will be able to quit out of the app again.
     const timeoutId = setTimeout(function() {
     canQuit = true;
     unblockWebsite(websitesURLs)
@@ -113,80 +143,76 @@ ipcMain.on('BeginRestriction', (event) => {
   
 })
 
-const unblockApp = (appPath) => {
 
-  // Execute a command to unblock the application
-  if (process.platform === 'win32') {
-    // On Windows, use the 'netsh' utility to remove the firewall rule
-    exec(`netsh advfirewall firewall delete rule name="Block ${appPath}"`, (error, stdout, stderr) => {
-      if (error) {
-        console.error(error)
-      } else {
-        console.log(`Unblocked ${appPath}`)
-      }
-    })
-  } else if (process.platform === 'darwin') {
-    // On macOS, use the 'pfctl' utility to remove the packet filter rule
-    exec(`echo "block drop out log quick on en0 from any to any" | sudo pfctl -df -`, (error, stdout, stderr) => {
-      if (error) {
-        console.error(error)
-      } else {
-        console.log(`Unblocked ${appPath}`)
-      }
-    })
-  } else {
-    console.log('Unsupported platform')
+const intervalId = setInterval(() => {
+  if (canQuit=== false){
+    appsToBlock.forEach(app => {
+      // check if the process is running
+      exec(`tasklist /FI "IMAGENAME eq ${app}"`, (err, stdout) => {
+          if (err) {
+              console.error(err);
+              return;
+          }
+          if (stdout.includes(app)) {
+              // process is running, kill it
+              exec(`taskkill /IM ${app} /F`, (err, stdout, stderr) => {
+                  if (err) {
+                      console.error(err);
+                      return;
+                  }
+                  console.log(`${app} process closed`);
+              });
+          }
+      });
+  });
   }
-}
+}, 1500);  
 
 
+// const unblockApp = (appName) => {
 
-const blockApp = (appPath) => {
+//   if (process.platform === 'win32') {
+//     appsToBlock = appsToBlock.filter((item) => item !== appName);
+//     console.log(appsToBlock)
+//   } else if (process.platform === 'darwin') {
+    
+//   }
+
+// }
+
+// const blockApp = (appName) => {
   
-  // Execute a command to block the application
-  if (process.platform === 'win32') {
-    // On Windows, use the 'netsh' utility to add a firewall rule
-    exec(`netsh advfirewall firewall add rule name="Block ${appPath}" dir=out action=block program="${appPath}"`, (error, stdout, stderr) => {
-      if (error) {
-        console.error(error)
-      } else {
-        console.log(`Blocked ${appPath}`)
-      }
-    })
-  } else if (process.platform === 'darwin') {
-    // On macOS, use the 'pfctl' utility to add a packet filter rule
-    exec(`echo "block drop out log quick on en0 from any to any" | sudo pfctl -ef -`, (error, stdout, stderr) => {
-      if (error) {
-        console.error(error)
-      } else {
-        console.log(`Blocked ${appPath}`)
-      }
-    })
-  } else {
-    console.log('Unsupported platform')
-  }
-}
+//   if (process.platform === 'win32') {
+//     appsToBlock.push(appName)
+//     console.log(appsToBlock)
+//   } else if (process.platform === 'darwin') {
+    
+   
+//   } else {
+//     console.log('Unsupported platform')
+//   }
+// }
 
 
 const blockWebsite = (website) => {
   
-  // // Close all Chrome windows
-  // exec('taskkill /im chrome.exe /f', (error, stdout, stderr) => {
-  //   if (error) {
-  //     console.error(`${error}`);
-  //     return;
-  //   }
-  //   console.log(`Success: ${stdout}`);
-  // });
+  // Close all Chrome windows
+  exec('taskkill /im chrome.exe /f', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`${error}`);
+      return;
+    }
+    console.log(`Success: ${stdout}`);
+  });
 
-  // // Close all Firefox windows
-  // exec('taskkill /im firefox.exe /f', (error, stdout, stderr) => {
-  //   if (error) {
-  //     console.error(`${error}`);
-  //     return;
-  //   }
-  //   console.log(`Success: ${stdout}`);
-  // });
+  // Close all Firefox windows
+  exec('taskkill /im firefox.exe /f', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`${error}`);
+      return;
+    }
+    console.log(`Success: ${stdout}`);
+  });
 
   const command = `echo 127.0.0.1 `
   if (currentOS === 'win32') {
