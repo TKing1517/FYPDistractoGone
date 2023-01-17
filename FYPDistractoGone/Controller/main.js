@@ -8,7 +8,6 @@ let appsToBlock = [];
 
 const currentOS = process.platform;
 
-
 if (currentOS === 'darwin') {
   console.log('Running on macOS');
 } else if (currentOS === 'win32') {
