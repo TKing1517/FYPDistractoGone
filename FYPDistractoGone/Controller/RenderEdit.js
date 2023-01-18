@@ -15,20 +15,10 @@ DeleteWebsiteInput.addEventListener('submit', (event) => {
     ipcRenderer.send('submit-websiteU', input)
 })
 
-const SubmitAppInput = document.getElementById('SubmitAppInput')
-SubmitAppInput.addEventListener('submit', (event) => {
+const FileSelector = document.getElementById('FileSelector')
+FileSelector.addEventListener('click', (event) => {
     event.preventDefault()
-    const input = document.getElementById('InputAppName').value
-    document.getElementById('InputAppName').value = ''
-    ipcRenderer.send('submit-app', input)
-})
-
-const DeleteAppInput = document.getElementById('DeleteAppInput')
-DeleteAppInput.addEventListener('submit', (event) => {
-    event.preventDefault()
-    const input = document.getElementById('InputAppNameU').value
-    document.getElementById('InputAppNameU').value = ''
-    ipcRenderer.send('submit-appU', input)
+    ipcRenderer.send('FileSelector')
 })
 
 ipcRenderer.on('websitesURLs', (event, websitesURLs) => {

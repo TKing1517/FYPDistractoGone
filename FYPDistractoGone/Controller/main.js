@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron')
+const path = require('path');
 const { exec } = require('child_process')
 const fs = require('fs')
 
@@ -61,21 +62,21 @@ ipcMain.on('submit-website', (event, website) => {
   
 })
 
-ipcMain.on('submit-app', (event, appName) => {
-  appName = appName + '.exe'
-  if (appsToBlock.includes(appName)) {
-    dialog.showMessageBox({
-      type: 'info',
-      message: 'This App is already noted',
-      buttons: ['OK']
-    })
-  } else {
-    appsToBlock.push(appName);
-    console.log(appsToBlock)
-    event.reply('appsToBlock', appsToBlock);
-  }
+// ipcMain.on('submit-app', (event, appName) => {
+//   appName = appName + '.exe'
+//   if (appsToBlock.includes(appName)) {
+//     dialog.showMessageBox({
+//       type: 'info',
+//       message: 'This App is already noted',
+//       buttons: ['OK']
+//     })
+//   } else {
+//     appsToBlock.push(appName);
+//     console.log(appsToBlock)
+//     event.reply('appsToBlock', appsToBlock);
+//   }
   
-})
+// })
 
 ipcMain.on('submit-websiteU', (event, website) => {
   const hostname = new URL(website).hostname;
@@ -93,36 +94,71 @@ ipcMain.on('submit-websiteU', (event, website) => {
   
 })
 
-ipcMain.on('submit-appU', (event, appName) => {
-  appName = appName + '.exe'
-  if (appsToBlock.includes(appName)) {
-    appsToBlock = appsToBlock.filter((item) => item !== appName);
-    console.log(appsToBlock)
-    event.reply('appsToBlock', appsToBlock);
-  } else {
-    dialog.showMessageBox({
-      type: 'info',
-      message: 'This App is not noted',
-      buttons: ['OK']
-    })
-  }
-})
+// ipcMain.on('submit-appU', (event, appName) => {
+//   appName = appName + '.exe'
+//   if (appsToBlock.includes(appName)) {
+//     appsToBlock = appsToBlock.filter((item) => item !== appName);
+//     console.log(appsToBlock)
+//     event.reply('appsToBlock', appsToBlock);
+//   } else {
+//     dialog.showMessageBox({
+//       type: 'info',
+//       message: 'This App is not noted',
+//       buttons: ['OK']
+//     })
+//   }
+// })
 
 ipcMain.on('RefreshList', (event) => {
   event.reply('websitesURLs', websitesURLs);
   event.reply('appsToBlock', appsToBlock);
 })
 
+ipcMain.on('FileSelector', (event) => {
+  const options = {
+    title: 'Select a file',
+    buttonLabel: 'Open',
+    defaultPath: 'C:\\',
+    filters: [
+      { name: 'Executables', extensions: ['exe'] }
+    ],
+    properties: ['openFile']
+  };
+
+  dialog.showOpenDialog(options).then(result => {
+    if(!result.canceled) {
+      result.filePaths.forEach(filePath => {
+        let NameofApp = path.basename(filePath);
+        appsToBlock.push(NameofApp);
+      });
+      console.log(appsToBlock);
+      event.reply('appsToBlock', appsToBlock);
+    }
+  });
+})
 
 ipcMain.on('BeginRestriction', (event) => {
 
   if (websitesURLs === undefined || websitesURLs.length == 0){
-    dialog.showMessageBox({
-      type: 'info',
-      message: 'Please input at least 1 URL before beginning restriction',
-      buttons: ['OK']
-    })
-    
+    if (appsToBlock === undefined || appsToBlock.length == 0){
+      dialog.showMessageBox({
+        type: 'info',
+        message: 'Please input at least 1 URL/App before beginning restriction',
+        buttons: ['OK']
+      })
+    } else {
+      dialog.showMessageBox({
+        type: 'info',
+        message: 'Restriction begun',
+        buttons: ['OK']
+      })
+      canQuit = false;
+      //The restriction will begin and last for 30 seconds, 
+      //after which the restriction will end and the user will be able to quit out of the app again.
+      const timeoutId = setTimeout(function() {
+      canQuit = true;
+      }, 30000);
+    }      
   } else {
     dialog.showMessageBox({
       type: 'info',
