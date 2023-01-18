@@ -115,6 +115,7 @@ ipcMain.on('RefreshList', (event) => {
 })
 
 ipcMain.on('FileSelector', (event) => {
+  //open file explorer with only folders and .exe files
   const options = {
     title: 'Select a file',
     buttonLabel: 'Open',
@@ -127,11 +128,25 @@ ipcMain.on('FileSelector', (event) => {
 
   dialog.showOpenDialog(options).then(result => {
     if(!result.canceled) {
+      //Convert selected file path to .exe file only
       result.filePaths.forEach(filePath => {
         let NameofApp = path.basename(filePath);
-        appsToBlock.push(NameofApp);
+        //If app is already in appsToBlock, remove it
+        if (appsToBlock.includes(NameofApp)) {
+          appsToBlock = appsToBlock.filter((item) => item !== NameofApp);
+          dialog.showMessageBox({
+            type: 'info',
+            message: 'Removed app: ' + NameofApp,
+            buttons: ['OK']
+          })
+        } else {
+          //else
+          //Add selected .exe file to appsToBlock array
+          appsToBlock.push(NameofApp);
+        }
       });
       console.log(appsToBlock);
+      //event trigger to update some other things
       event.reply('appsToBlock', appsToBlock);
     }
   });
