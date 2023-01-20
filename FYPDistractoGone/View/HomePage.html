@@ -6,16 +6,16 @@
       <title id="HomePageTitle">Home Page</title>
     </head>
 
-    <body>
+    <body onload="RefreshVariables()">
 
 
       <a href="EditBlockList.html">Navigate to Edit Block List Page</a>
 
       <form id="BeginRestriction">
-        <label for="name">Begin Restriction?(for 30 seconds || PRESSING THIS BUTTON WILL CLOSE YOUR BROWSER)</label>
+        <label for="name">Begin Restriction?(for 30 seconds)</label>
         <button id="InputBeginRestrictionbtn" type="submit" style="background-color:#e74c3c">Submit</button>
       </form>
-
+      <p id="NPoints">Points: 0</p>
     <script src='../Controller/RenderHome.js'></script>
   
     </body>

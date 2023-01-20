@@ -5,3 +5,11 @@ BeginRestriction.addEventListener('submit', (event) => {
 
     ipcRenderer.send('BeginRestriction')
 })
+
+ipcRenderer.on('Points', (event, UserPoints) => {
+    document.getElementById('NPoints').innerText = ('Points: ' + UserPoints)
+});
+
+function RefreshVariables() {
+    ipcRenderer.send('RefreshVariables')
+}

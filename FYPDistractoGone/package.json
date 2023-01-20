@@ -18,5 +18,9 @@
     "electron": "^22.0.0",
     "electron-builder": "^22.10.3",
     "electron-rebuild": "^3.2.9"
+  },
+  "dependencies": {
+    "file-explorer": "^0.0.1",
+    "file-selector": "^0.6.0"
   }
 }

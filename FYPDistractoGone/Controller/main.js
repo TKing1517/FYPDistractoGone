@@ -6,6 +6,7 @@ const fs = require('fs')
 let websitesURLs = [];
 let canQuit = true;
 let appsToBlock = [];
+let UserPoints =0;
 
 const currentOS = process.platform;
 
@@ -17,9 +18,9 @@ if (currentOS === 'darwin') {
   console.log('Running on', currentOS);
 }
 
-
+let win;
 const createWindow = () => {
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -33,10 +34,6 @@ const createWindow = () => {
       event.preventDefault();
     }
   });
-  //unblockApp('C:\\Program Files (x86)\\Steam\\Steam.exe')
-  //blockApp('C:\\Program Files (x86)\\Steam\\Steam.exe')
-  // unblockWebsite('om')
-  //win.webContents.openDevTools();
   win.setMenu(null)
 }
 
@@ -62,22 +59,6 @@ ipcMain.on('submit-website', (event, website) => {
   
 })
 
-// ipcMain.on('submit-app', (event, appName) => {
-//   appName = appName + '.exe'
-//   if (appsToBlock.includes(appName)) {
-//     dialog.showMessageBox({
-//       type: 'info',
-//       message: 'This App is already noted',
-//       buttons: ['OK']
-//     })
-//   } else {
-//     appsToBlock.push(appName);
-//     console.log(appsToBlock)
-//     event.reply('appsToBlock', appsToBlock);
-//   }
-  
-// })
-
 ipcMain.on('submit-websiteU', (event, website) => {
   const hostname = new URL(website).hostname;
   if (websitesURLs.includes(hostname)) {
@@ -94,24 +75,13 @@ ipcMain.on('submit-websiteU', (event, website) => {
   
 })
 
-// ipcMain.on('submit-appU', (event, appName) => {
-//   appName = appName + '.exe'
-//   if (appsToBlock.includes(appName)) {
-//     appsToBlock = appsToBlock.filter((item) => item !== appName);
-//     console.log(appsToBlock)
-//     event.reply('appsToBlock', appsToBlock);
-//   } else {
-//     dialog.showMessageBox({
-//       type: 'info',
-//       message: 'This App is not noted',
-//       buttons: ['OK']
-//     })
-//   }
-// })
-
 ipcMain.on('RefreshList', (event) => {
   event.reply('websitesURLs', websitesURLs);
   event.reply('appsToBlock', appsToBlock);
+})
+
+ipcMain.on('RefreshVariables', (event) => {
+  event.reply('Points', UserPoints);
 })
 
 ipcMain.on('FileSelector', (event) => {
@@ -194,7 +164,7 @@ ipcMain.on('BeginRestriction', (event) => {
 })
 
 
-const intervalId = setInterval(() => {
+const killtask = setInterval(() => {
   if (canQuit=== false){
     appsToBlock.forEach(app => {
       // check if the process is running
@@ -218,31 +188,36 @@ const intervalId = setInterval(() => {
   }
 }, 1500);  
 
-
-// const unblockApp = (appName) => {
-
-//   if (process.platform === 'win32') {
-//     appsToBlock = appsToBlock.filter((item) => item !== appName);
-//     console.log(appsToBlock)
-//   } else if (process.platform === 'darwin') {
-    
-//   }
-
-// }
-
-// const blockApp = (appName) => {
-  
-//   if (process.platform === 'win32') {
-//     appsToBlock.push(appName)
-//     console.log(appsToBlock)
-//   } else if (process.platform === 'darwin') {
-    
-   
-//   } else {
-//     console.log('Unsupported platform')
-//   }
-// }
-
+let GivePoints;
+let isIntervalActive = false;
+const startPoints = () => {
+  if (!isIntervalActive && canQuit === false) {
+    GivePoints = setInterval(() => {
+      //Assign points every 20 secs(currently arbitrary values)
+      UserPoints += 1000;
+      win.webContents.reload();
+      console.log(UserPoints);
+    }, 20000);
+    isIntervalActive = true;
+  }
+}
+const stopPoints = () => {
+  if (isIntervalActive && canQuit === true) {
+    //stop giving points if restriction is no longer running
+    clearInterval(GivePoints);
+    isIntervalActive = false;
+  }
+}
+setInterval(() => {
+  //canQuit can be used to determine if restriction is running.
+  if (canQuit) {
+    // not running
+    stopPoints();
+  } else {
+    // is running
+    startPoints();
+  }
+}, 10);
 
 const blockWebsite = (website) => {
   
