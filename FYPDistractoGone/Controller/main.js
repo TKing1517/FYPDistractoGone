@@ -2,13 +2,50 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const path = require('path');
 const { exec } = require('child_process')
 const fs = require('fs')
+const { insertStudent } = require('../Model/db.js');
+const Student = require('../Model/Student');
 
 let websitesURLs = [];
 let canQuit = true;
 let appsToBlock = [];
 let UserPoints =0;
+let GivePoints;
+let isIntervalActive = false;
 
 const currentOS = process.platform;
+
+// const newStudent = {
+//   Email: 'example2@email.com',
+//   Password: 'password',
+//   Points: 0,
+//   TimeSpentRestricted: 0,
+//   Username: 'example'
+// };
+
+// insertStudent(newStudent)
+//   .then(() => {
+//     console.log('Student has been added successfully');
+//   })
+//   .catch(err => {
+//     console.log('Error while adding student:', err);
+//   });
+
+// Student.findOne({ where: { StudentID: 12347 } })
+//   .then(student => {
+//     console.log(student.dataValues);
+//   })
+//   .catch(err => {
+//     console.log(`Error while retrieving student: ${err}`);
+//   });
+
+// Student.findByPk(12347)
+//   .then(student => {
+//     console.log(student.dataValues); // this will print the student with ID 12345
+//     // you can now use the student object to access its properties
+//   })
+//   .catch(err => {
+//     console.error(err);
+//   });
 
 if (currentOS === 'darwin') {
   console.log('Running on macOS');
@@ -37,42 +74,54 @@ const createWindow = () => {
   win.setMenu(null)
 }
 
-
 app.whenReady().then(() => {
   createWindow()
 })
 
-
 ipcMain.on('submit-website', (event, website) => {
-  const hostname = new URL(website).hostname;
-  if (websitesURLs.includes(hostname)) {
+  if (canQuit === false){
     dialog.showMessageBox({
       type: 'info',
-      message: 'This URL is already noted',
+      message: 'Restriction is currently running',
       buttons: ['OK']
     })
   } else {
-    websitesURLs.push(hostname);
-    console.log(websitesURLs)
-    event.reply('websitesURLs', websitesURLs);
+    const hostname = new URL(website).hostname;
+    if (websitesURLs.includes(hostname)) {
+      dialog.showMessageBox({
+        type: 'info',
+        message: 'This URL is already noted',
+        buttons: ['OK']
+      })
+    } else {
+      websitesURLs.push(hostname);
+      console.log(websitesURLs)
+      event.reply('websitesURLs', websitesURLs);
+    }
   }
-  
 })
 
 ipcMain.on('submit-websiteU', (event, website) => {
-  const hostname = new URL(website).hostname;
-  if (websitesURLs.includes(hostname)) {
-    websitesURLs = websitesURLs.filter((item) => item !== hostname);
-    console.log(websitesURLs)
-    event.reply('websitesURLs', websitesURLs);
-  } else {
+  if (canQuit === false){
     dialog.showMessageBox({
       type: 'info',
-      message: 'This URL is not noted',
+      message: 'Restriction is currently running',
       buttons: ['OK']
     })
+  } else {
+    const hostname = new URL(website).hostname;
+    if (websitesURLs.includes(hostname)) {
+      websitesURLs = websitesURLs.filter((item) => item !== hostname);
+      console.log(websitesURLs)
+      event.reply('websitesURLs', websitesURLs);
+    } else {
+      dialog.showMessageBox({
+        type: 'info',
+        message: 'This URL is not noted',
+        buttons: ['OK']
+      })
+    }
   }
-  
 })
 
 ipcMain.on('RefreshList', (event) => {
@@ -85,84 +134,99 @@ ipcMain.on('RefreshVariables', (event) => {
 })
 
 ipcMain.on('FileSelector', (event) => {
-  //open file explorer with only folders and .exe files
-  const options = {
-    title: 'Select a file',
-    buttonLabel: 'Open',
-    defaultPath: 'C:\\',
-    filters: [
-      { name: 'Executables', extensions: ['exe'] }
-    ],
-    properties: ['openFile']
-  };
+  if (canQuit === false){
+    dialog.showMessageBox({
+      type: 'info',
+      message: 'Restriction is currently running',
+      buttons: ['OK']
+    })
+  } else {
+    //open file explorer with only folders and .exe files
+    const options = {
+      title: 'Select a file',
+      buttonLabel: 'Open',
+      defaultPath: 'C:\\',
+      filters: [
+        { name: 'Executables', extensions: ['exe'] }
+      ],
+      properties: ['openFile']
+    };
 
-  dialog.showOpenDialog(options).then(result => {
-    if(!result.canceled) {
-      //Convert selected file path to .exe file only
-      result.filePaths.forEach(filePath => {
-        let NameofApp = path.basename(filePath);
-        //If app is already in appsToBlock, remove it
-        if (appsToBlock.includes(NameofApp)) {
-          appsToBlock = appsToBlock.filter((item) => item !== NameofApp);
-          dialog.showMessageBox({
-            type: 'info',
-            message: 'Removed app: ' + NameofApp,
-            buttons: ['OK']
-          })
-        } else {
-          //else
-          //Add selected .exe file to appsToBlock array
-          appsToBlock.push(NameofApp);
-        }
-      });
-      console.log(appsToBlock);
-      //event trigger to update some other things
-      event.reply('appsToBlock', appsToBlock);
-    }
-  });
+    dialog.showOpenDialog(options).then(result => {
+      if(!result.canceled) {
+        //Convert selected file path to .exe file only
+        result.filePaths.forEach(filePath => {
+          let NameofApp = path.basename(filePath);
+          //If app is already in appsToBlock, remove it
+          if (appsToBlock.includes(NameofApp)) {
+            appsToBlock = appsToBlock.filter((item) => item !== NameofApp);
+            dialog.showMessageBox({
+              type: 'info',
+              message: 'Removed app: ' + NameofApp,
+              buttons: ['OK']
+            })
+          } else {
+            //else
+            //Add selected .exe file to appsToBlock array
+            appsToBlock.push(NameofApp);
+          }
+        });
+        console.log(appsToBlock);
+        //event trigger to update some other things
+        event.reply('appsToBlock', appsToBlock);
+      }
+    });
+  }
+  
 })
 
 ipcMain.on('BeginRestriction', (event) => {
-
-  if (websitesURLs === undefined || websitesURLs.length == 0){
-    if (appsToBlock === undefined || appsToBlock.length == 0){
-      dialog.showMessageBox({
-        type: 'info',
-        message: 'Please input at least 1 URL/App before beginning restriction',
-        buttons: ['OK']
-      })
+  //Restriction cannot begin if its already running
+  if (canQuit === false){
+    dialog.showMessageBox({
+      type: 'info',
+      message: 'Restriction is already running',
+      buttons: ['OK']
+    })
+  } else {
+    if (websitesURLs === undefined || websitesURLs.length == 0){
+      if (appsToBlock === undefined || appsToBlock.length == 0){
+        dialog.showMessageBox({
+          type: 'info',
+          message: 'Please input at least 1 URL/App before beginning restriction',
+          buttons: ['OK']
+        })
+      } else {
+        dialog.showMessageBox({
+          type: 'info',
+          message: 'Restriction begun',
+          buttons: ['OK']
+        })
+        canQuit = false;
+        //The restriction will begin and last for 30 seconds, 
+        //after which the restriction will end and the user will be able to quit out of the app again.
+        const timeoutId = setTimeout(function() {
+          canQuit = true;
+        }, 30000);
+      }      
     } else {
       dialog.showMessageBox({
         type: 'info',
         message: 'Restriction begun',
         buttons: ['OK']
       })
+      console.log(websitesURLs)
+      blockWebsite(websitesURLs)
       canQuit = false;
       //The restriction will begin and last for 30 seconds, 
       //after which the restriction will end and the user will be able to quit out of the app again.
       const timeoutId = setTimeout(function() {
-      canQuit = true;
+        canQuit = true;
+        unblockWebsite(websitesURLs)
       }, 30000);
-    }      
-  } else {
-    dialog.showMessageBox({
-      type: 'info',
-      message: 'Restriction begun',
-      buttons: ['OK']
-    })
-    console.log(websitesURLs)
-    blockWebsite(websitesURLs)
-    canQuit = false;
-    //The restriction will begin and last for 30 seconds, 
-    //after which the restriction will end and the user will be able to quit out of the app again.
-    const timeoutId = setTimeout(function() {
-    canQuit = true;
-    unblockWebsite(websitesURLs)
-    }, 30000);
-  }
-  
+    }
+  } 
 })
-
 
 const killtask = setInterval(() => {
   if (canQuit=== false){
@@ -188,8 +252,6 @@ const killtask = setInterval(() => {
   }
 }, 1500);  
 
-let GivePoints;
-let isIntervalActive = false;
 const startPoints = () => {
   if (!isIntervalActive && canQuit === false) {
     GivePoints = setInterval(() => {
