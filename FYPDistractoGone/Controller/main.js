@@ -2,8 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const path = require('path');
 const { exec } = require('child_process')
 const fs = require('fs')
-const { insertStudent } = require('../Model/db.js');
-const Student = require('../Model/Student');
+const connection = require('../Model/db.js');
 
 let websitesURLs = [];
 let canQuit = true;
@@ -12,40 +11,8 @@ let UserPoints =0;
 let GivePoints;
 let isIntervalActive = false;
 
+
 const currentOS = process.platform;
-
-// const newStudent = {
-//   Email: 'example2@email.com',
-//   Password: 'password',
-//   Points: 0,
-//   TimeSpentRestricted: 0,
-//   Username: 'example'
-// };
-
-// insertStudent(newStudent)
-//   .then(() => {
-//     console.log('Student has been added successfully');
-//   })
-//   .catch(err => {
-//     console.log('Error while adding student:', err);
-//   });
-
-// Student.findOne({ where: { StudentID: 12347 } })
-//   .then(student => {
-//     console.log(student.dataValues);
-//   })
-//   .catch(err => {
-//     console.log(`Error while retrieving student: ${err}`);
-//   });
-
-// Student.findByPk(12347)
-//   .then(student => {
-//     console.log(student.dataValues); // this will print the student with ID 12345
-//     // you can now use the student object to access its properties
-//   })
-//   .catch(err => {
-//     console.error(err);
-//   });
 
 if (currentOS === 'darwin') {
   console.log('Running on macOS');
