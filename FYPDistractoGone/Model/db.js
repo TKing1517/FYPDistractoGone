@@ -13,13 +13,32 @@ connection.connect((err) => {
       return;
     }
     console.log('Connected to the database as id ' + connection.threadId);
-    //Testing select from table below
-    connection.query('SELECT * FROM Student', (error, results) => {
-      if (error) {
-        console.error('Error querying the database: ' + error);
-        return;
-      }
-      console.log('Results:', results);
-      connection.end();
-    });
+});
+
+function selectFromTable(table,columns,whereClause){
+  connection.query(`SELECT ${columns} FROM ${table} ${whereClause}`, (error, results) => {
+    if (error) {
+      console.error('Error querying the database: ' + error);
+      return;
+    }
+    console.log('Results:', results);
+    connection.end();
   });
+}
+
+function insertIntoTable(table,Username,Password,Email,Points,TimeSpentRestricted){
+  let insertData = {Username: Username,Password: Password,Email: Email,Points: Points,TimeSpentRestricted: TimeSpentRestricted};
+  let sql = `INSERT INTO ${table} SET ?`;
+  let query = connection.query(sql, insertData,(err, result) => {
+      if(err) throw err;
+      console.log(`Data inserted into the ${table} table`);
+  });
+}
+
+module.exports = {
+  connection,
+  selectFromTable,
+  insertIntoTable
+};
+
+

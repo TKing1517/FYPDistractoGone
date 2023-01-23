@@ -2,7 +2,12 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const path = require('path');
 const { exec } = require('child_process')
 const fs = require('fs')
-const connection = require('../Model/db.js');
+const {connection,selectFromTable,insertIntoTable} = require('../Model/db.js');
+
+selectFromTable("Student", "*");
+// selectFromTable("Student", "*","WHERE StudentID = 1");
+
+insertIntoTable("Student","TestUserName","TestPassword","TestEmail@Email.com",666,1000000);
 
 let websitesURLs = [];
 let canQuit = true;
@@ -10,6 +15,7 @@ let appsToBlock = [];
 let UserPoints =0;
 let GivePoints;
 let isIntervalActive = false;
+
 
 
 const currentOS = process.platform;
