@@ -2,12 +2,12 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const path = require('path');
 const { exec } = require('child_process')
 const fs = require('fs')
-const {connection,selectFromTable,insertIntoTable} = require('../Model/db.js');
+const {connection,selectFromTable,insertIntoStudent} = require('../Model/db.js');
 
-selectFromTable("Student", "*");
+// selectFromTable("Student", "*");
 // selectFromTable("Student", "*","WHERE StudentID = 1");
 
-insertIntoTable("Student","TestUserName","TestPassword","TestEmail@Email.com",666,1000000);
+// insertIntoTable("Student","TestUserName","TestPassword","TestEmail@Email.com",666,1000000);
 
 let websitesURLs = [];
 let canQuit = true;
@@ -38,7 +38,7 @@ const createWindow = () => {
     }
   })
 
-  win.loadFile('View/HomePage.html')
+  win.loadFile('View/SignUp.html')
   win.on('close', (event) => {
     if (!canQuit) {
       event.preventDefault();
@@ -50,6 +50,24 @@ const createWindow = () => {
 app.whenReady().then(() => {
   createWindow()
 })
+
+ipcMain.on('CreateUser', (event,Email,UserName,Password) => {
+  //Check if username already exists.
+  selectFromTable(`Student`, "*",`Username = "${UserName}"`,(results) => {
+    if(results.length === 0) {
+      //does not exist.
+      insertIntoStudent("Student",UserName,Password,Email,0,0);
+      win.loadFile('View/HomePage.html')
+    } else {
+      //exists.
+      dialog.showMessageBox({
+        type: 'info',
+        message: 'The username already exists.',
+        buttons: ['OK']
+      })
+    }
+  });
+});
 
 ipcMain.on('submit-website', (event, website) => {
   if (canQuit === false){

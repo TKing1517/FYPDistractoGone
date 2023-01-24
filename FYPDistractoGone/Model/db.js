@@ -15,18 +15,20 @@ connection.connect((err) => {
     console.log('Connected to the database as id ' + connection.threadId);
 });
 
-function selectFromTable(table,columns,whereClause){
-  connection.query(`SELECT ${columns} FROM ${table} ${whereClause}`, (error, results) => {
+function selectFromTable(table,columns,whereClause, callback){
+  let query = `SELECT ${columns} FROM ${table} WHERE BINARY ${whereClause}`;
+  connection.query(query, (error, results) => {
     if (error) {
       console.error('Error querying the database: ' + error);
       return;
     }
-    console.log('Results:', results);
-    connection.end();
+    callback(results);
   });
 }
 
-function insertIntoTable(table,Username,Password,Email,Points,TimeSpentRestricted){
+
+function insertIntoStudent(table,Username,Password,Email,Points,TimeSpentRestricted){
+  //Can improve by making insertData a variable(object? of student eg) that is passed into this function.
   let insertData = {Username: Username,Password: Password,Email: Email,Points: Points,TimeSpentRestricted: TimeSpentRestricted};
   let sql = `INSERT INTO ${table} SET ?`;
   let query = connection.query(sql, insertData,(err, result) => {
@@ -38,7 +40,7 @@ function insertIntoTable(table,Username,Password,Email,Points,TimeSpentRestricte
 module.exports = {
   connection,
   selectFromTable,
-  insertIntoTable
+  insertIntoStudent
 };
 
 
