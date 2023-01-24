@@ -10,6 +10,10 @@ ipcRenderer.on('Points', (event, UserPoints) => {
     document.getElementById('NPoints').innerText = ('Points: ' + UserPoints)
 });
 
+ipcRenderer.on('CurrentUser', (event, CurrentUser) => {
+    document.getElementById('CurrentUser').innerText = ('Signed in as: ' + CurrentUser)
+});
+
 function RefreshVariables() {
     ipcRenderer.send('RefreshVariables')
 }

@@ -3,6 +3,7 @@ const path = require('path');
 const { exec } = require('child_process')
 const fs = require('fs')
 const {connection,selectFromTable,insertIntoStudent} = require('../Model/db.js');
+const Student = require('../Model/Student');
 
 // selectFromTable("Student", "*");
 // selectFromTable("Student", "*","WHERE StudentID = 1");
@@ -15,6 +16,7 @@ let appsToBlock = [];
 let UserPoints =0;
 let GivePoints;
 let isIntervalActive = false;
+let student;
 
 
 
@@ -57,6 +59,13 @@ ipcMain.on('CreateUser', (event,Email,UserName,Password) => {
     if(results.length === 0) {
       //does not exist.
       insertIntoStudent("Student",UserName,Password,Email,0,0);
+      //fill in a student object.
+      selectFromTable(`Student`, "*",`Username = "${UserName}"`,(results) => {
+        let studentData = results[0];
+        student = new Student(studentData.StudentID, studentData.Username, studentData.Password, studentData.Email, studentData.Points, studentData.TimeSpentRestricted);
+        //console.log(student);
+      })
+      //need to use student somewhere.
       win.loadFile('View/HomePage.html')
     } else {
       //exists.
@@ -68,6 +77,26 @@ ipcMain.on('CreateUser', (event,Email,UserName,Password) => {
     }
   });
 });
+
+ipcMain.on('SignIn', (event,UserName,Password) => {
+  //check against inputted password and username.
+  selectFromTable(`Student`, "*",`Username = "${UserName}" AND Password = "${Password}"`,(results) => {
+    if(results.length === 0) {
+      //does not exist.
+      dialog.showMessageBox({
+        type: 'info',
+        message: 'User does not exist/details incorrect.',
+        buttons: ['OK']
+      })
+    } else {
+      //fill in a student object.
+      let studentData = results[0];
+      student = new Student(studentData.StudentID, studentData.Username, studentData.Password, studentData.Email, studentData.Points, studentData.TimeSpentRestricted);
+      //console.log(student);
+      win.loadFile('View/HomePage.html')
+    }
+  });
+})
 
 ipcMain.on('submit-website', (event, website) => {
   if (canQuit === false){
@@ -121,7 +150,11 @@ ipcMain.on('RefreshList', (event) => {
 })
 
 ipcMain.on('RefreshVariables', (event) => {
-  event.reply('Points', UserPoints);
+  const timeoutId = setTimeout(function() {
+    console.log(student);
+    event.reply('Points', student.Points);
+    event.reply('CurrentUser', student.Username);
+  }, 200);
 })
 
 ipcMain.on('FileSelector', (event) => {

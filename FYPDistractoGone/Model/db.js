@@ -26,7 +26,6 @@ function selectFromTable(table,columns,whereClause, callback){
   });
 }
 
-
 function insertIntoStudent(table,Username,Password,Email,Points,TimeSpentRestricted){
   //Can improve by making insertData a variable(object? of student eg) that is passed into this function.
   let insertData = {Username: Username,Password: Password,Email: Email,Points: Points,TimeSpentRestricted: TimeSpentRestricted};
