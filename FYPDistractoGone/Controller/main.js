@@ -36,7 +36,9 @@ autoUpdater.on("update-available", (info) => {
 
 autoUpdater.on("update-downloaded", (info) => {
   console.log("Update downloaded:", info);
+  autoUpdater.quitAndInstall();
 });
+
 
 autoUpdater.on("error", (err) => {
   console.log("Error updating:", err);
