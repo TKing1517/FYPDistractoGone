@@ -1,5 +1,4 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron')
-const { autoUpdater } = require("electron-updater");
 const path = require('path');
 const { exec } = require('child_process')
 const fs = require('fs')
@@ -19,30 +18,7 @@ let GivePoints;
 let isIntervalActive = false;
 let student;
 
-autoUpdater.setFeedURL({
-  owner: "TKing1517",
-  repo: "FYPDistractoGone",
-  updateInterval: "1 minute",
-  provider: "github",
-});
 
-function checkForUpdates() {
-  autoUpdater.checkForUpdates();
-}
-
-autoUpdater.on("update-available", (info) => {
-  console.log("Update available:", info);
-});
-
-autoUpdater.on("update-downloaded", (info) => {
-  console.log("Update downloaded:", info);
-  autoUpdater.quitAndInstall();
-});
-
-
-autoUpdater.on("error", (err) => {
-  console.log("Error updating:", err);
-});
 
 const currentOS = process.platform;
 
@@ -56,7 +32,6 @@ if (currentOS === 'darwin') {
 
 let win;
 const createWindow = () => {
-  checkForUpdates();
   win = new BrowserWindow({
     webPreferences: {
       nodeIntegration: true,
