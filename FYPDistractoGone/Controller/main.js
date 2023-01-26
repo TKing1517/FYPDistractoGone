@@ -236,8 +236,10 @@ ipcMain.on('BeginRestriction', (event) => {
         //The restriction will begin and last for 30 seconds, 
         //after which the restriction will end and the user will be able to quit out of the app again.
         const timeoutId = setTimeout(function() {
+          //time stored as 1000 per second. Will be converted to user-understandable wherever needed.
+          let UpdatedTime = student.TimeSpentRestricted + 30000;
           //updating points.
-          updateStudent({Points: student.Points}, student.StudentID);
+          updateStudent({Points: student.Points,TimeSpentRestricted: UpdatedTime}, student.StudentID);
           canQuit = true;
         }, 30000);
       }      
