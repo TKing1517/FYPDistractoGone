@@ -36,10 +36,20 @@ function insertIntoStudent(table,Username,Password,Email,Points,TimeSpentRestric
   });
 }
 
+function updateStudent(updateValues, StudentID) {
+  let sql = `UPDATE Student SET ? WHERE StudentID = ${StudentID}`;
+  let query = connection.query(sql, updateValues, (err, result) => {
+    if (err) throw err;
+    console.log(`Data updated in the Student table`);
+  });
+}
+
+
 module.exports = {
   connection,
   selectFromTable,
-  insertIntoStudent
+  insertIntoStudent,
+  updateStudent
 };
 
 

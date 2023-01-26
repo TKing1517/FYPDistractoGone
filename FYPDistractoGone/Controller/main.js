@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const path = require('path');
 const { exec } = require('child_process')
 const fs = require('fs')
-const {connection,selectFromTable,insertIntoStudent} = require('../Model/db.js');
+const {connection,selectFromTable,insertIntoStudent,updateStudent} = require('../Model/db.js');
 const Student = require('../Model/Student');
 
 // selectFromTable("Student", "*");
@@ -13,10 +13,10 @@ const Student = require('../Model/Student');
 let websitesURLs = [];
 let canQuit = true;
 let appsToBlock = [];
-let UserPoints =0;
 let GivePoints;
 let isIntervalActive = false;
 let student;
+let CountForSignIn = 0;
 
 
 
@@ -150,11 +150,17 @@ ipcMain.on('RefreshList', (event) => {
 })
 
 ipcMain.on('RefreshVariables', (event) => {
-  const timeoutId = setTimeout(function() {
-    console.log(student);
+  if (CountForSignIn > 0){
     event.reply('Points', student.Points);
     event.reply('CurrentUser', student.Username);
-  }, 200);
+  } else {
+    const timeoutId = setTimeout(function() {
+      console.log(student);
+      event.reply('Points', student.Points);
+      event.reply('CurrentUser', student.Username);
+      CountForSignIn += 1
+    }, 50);
+  }
 })
 
 ipcMain.on('FileSelector', (event) => {
@@ -230,6 +236,8 @@ ipcMain.on('BeginRestriction', (event) => {
         //The restriction will begin and last for 30 seconds, 
         //after which the restriction will end and the user will be able to quit out of the app again.
         const timeoutId = setTimeout(function() {
+          //updating points.
+          updateStudent({Points: student.Points}, student.StudentID);
           canQuit = true;
         }, 30000);
       }      
@@ -280,9 +288,9 @@ const startPoints = () => {
   if (!isIntervalActive && canQuit === false) {
     GivePoints = setInterval(() => {
       //Assign points every 20 secs(currently arbitrary values)
-      UserPoints += 1000;
+      student.Points += 1000;
       win.webContents.reload();
-      console.log(UserPoints);
+      console.log(student.Points);
     }, 20000);
     isIntervalActive = true;
   }
