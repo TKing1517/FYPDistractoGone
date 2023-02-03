@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const path = require('path');
 const { exec } = require('child_process')
 const fs = require('fs')
-const {connection,selectFromTable,insertIntoStudent,updateStudent,insertURLintoBlocked,DeleteURLFromBlocked,insertAppIntoBlocked,DeleteAppFromBlocked} = require('../Model/db.js');
+const {connection,selectFromTable,insertIntoStudent,updateStudent,insertURLintoBlocked,DeleteURLFromBlocked,insertAppIntoBlocked,DeleteAppFromBlocked,getBlockedAppsFromDB,getBlockedURLsFromDB} = require('../Model/db.js');
 const Student = require('../Model/Student');
 
 // selectFromTable("Student", "*");
@@ -93,6 +93,8 @@ ipcMain.on('SignIn', (event,UserName,Password) => {
       let studentData = results[0];
       student = new Student(studentData.StudentID, studentData.Username, studentData.Password, studentData.Email, studentData.Points, studentData.TimeSpentRestricted);
       //console.log(student);
+      appsToBlock = getBlockedAppsFromDB(student.StudentID);
+      websitesURLs = getBlockedURLsFromDB(student.StudentID);
       win.loadFile('View/HomePage.html')
     }
   });

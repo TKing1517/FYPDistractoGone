@@ -61,6 +61,18 @@ function DeleteURLFromBlocked(StudentID, URL){
   });
 }
 
+function getBlockedURLsFromDB(StudentID) {
+  let URLs = [];
+  let sql = `SELECT URL FROM BlockList WHERE StudentID = ${StudentID} AND AppOrURL = 'URL'`;
+  connection.query(sql, (err, result) => {
+    if (err) throw err;
+    for (let i = 0; i < result.length; i++) {
+      URLs.push(result[i].URL);
+    }
+  });
+  return URLs;
+}
+
 function insertAppIntoBlocked(StudentID,AppName){
   let insertData = {StudentID: StudentID,AppName: AppName,AppOrURL:"App"};
   let sql = `INSERT INTO BlockList SET ?`;
@@ -78,6 +90,18 @@ function DeleteAppFromBlocked(StudentID, AppName){
   });
 }
 
+function getBlockedAppsFromDB(StudentID) {
+  let appsToBlock = [];
+  let sql = `SELECT AppName FROM BlockList WHERE StudentID = ${StudentID} AND AppOrURL = 'App'`;
+  connection.query(sql, (err, result) => {
+    if (err) throw err;
+    for (let i = 0; i < result.length; i++) {
+      appsToBlock.push(result[i].AppName);
+    }
+  });
+  return appsToBlock;
+}
+
 module.exports = {
   connection,
   selectFromTable,
@@ -86,7 +110,9 @@ module.exports = {
   insertURLintoBlocked,
   DeleteURLFromBlocked,
   insertAppIntoBlocked,
-  DeleteAppFromBlocked
+  DeleteAppFromBlocked,
+  getBlockedAppsFromDB,
+  getBlockedURLsFromDB
 };
 
 
