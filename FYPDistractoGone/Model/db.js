@@ -44,12 +44,49 @@ function updateStudent(updateValues, StudentID) {
   });
 }
 
+function insertURLintoBlocked(StudentID,URL){
+  let insertData = {StudentID: StudentID,URL: URL,AppOrURL:"URL"};
+  let sql = `INSERT INTO BlockList SET ?`;
+  let query = connection.query(sql, insertData,(err, result) => {
+      if(err) throw err;
+      console.log(`Data inserted into the BlockList table`);
+  });
+}
+
+function DeleteURLFromBlocked(StudentID, URL){
+  const query = `DELETE FROM BlockList WHERE StudentID = ${StudentID} AND URL = '${URL}'`;
+  connection.query(query, (err, result) => {
+    if(err) throw err;
+    console.log(`Data deleted from the BlockList table`);
+  });
+}
+
+function insertAppIntoBlocked(StudentID,AppName){
+  let insertData = {StudentID: StudentID,AppName: AppName,AppOrURL:"App"};
+  let sql = `INSERT INTO BlockList SET ?`;
+  let query = connection.query(sql, insertData,(err, result) => {
+      if(err) throw err;
+      console.log(`Data inserted into the BlockList table`);
+  });
+}
+
+function DeleteAppFromBlocked(StudentID, AppName){
+  const query = `DELETE FROM BlockList WHERE StudentID = ${StudentID} AND AppName = '${AppName}'`;
+  connection.query(query, (err, result) => {
+    if(err) throw err;
+    console.log(`Data deleted from the BlockList table`);
+  });
+}
 
 module.exports = {
   connection,
   selectFromTable,
   insertIntoStudent,
-  updateStudent
+  updateStudent,
+  insertURLintoBlocked,
+  DeleteURLFromBlocked,
+  insertAppIntoBlocked,
+  DeleteAppFromBlocked
 };
 
 

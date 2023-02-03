@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const path = require('path');
 const { exec } = require('child_process')
 const fs = require('fs')
-const {connection,selectFromTable,insertIntoStudent,updateStudent} = require('../Model/db.js');
+const {connection,selectFromTable,insertIntoStudent,updateStudent,insertURLintoBlocked,DeleteURLFromBlocked,insertAppIntoBlocked,DeleteAppFromBlocked} = require('../Model/db.js');
 const Student = require('../Model/Student');
 
 // selectFromTable("Student", "*");
@@ -114,6 +114,7 @@ ipcMain.on('submit-website', (event, website) => {
         buttons: ['OK']
       })
     } else {
+      insertURLintoBlocked(student.StudentID,hostname);
       websitesURLs.push(hostname);
       console.log(websitesURLs)
       event.reply('websitesURLs', websitesURLs);
@@ -131,6 +132,7 @@ ipcMain.on('submit-websiteU', (event, website) => {
   } else {
     const hostname = new URL(website).hostname;
     if (websitesURLs.includes(hostname)) {
+      DeleteURLFromBlocked(student.StudentID,hostname);
       websitesURLs = websitesURLs.filter((item) => item !== hostname);
       console.log(websitesURLs)
       event.reply('websitesURLs', websitesURLs);
@@ -189,6 +191,7 @@ ipcMain.on('FileSelector', (event) => {
           let NameofApp = path.basename(filePath);
           //If app is already in appsToBlock, remove it
           if (appsToBlock.includes(NameofApp)) {
+            DeleteAppFromBlocked(student.StudentID,NameofApp)
             appsToBlock = appsToBlock.filter((item) => item !== NameofApp);
             dialog.showMessageBox({
               type: 'info',
@@ -199,6 +202,7 @@ ipcMain.on('FileSelector', (event) => {
             //else
             //Add selected .exe file to appsToBlock array
             appsToBlock.push(NameofApp);
+            insertAppIntoBlocked(student.StudentID,NameofApp)
           }
         });
         console.log(appsToBlock);
