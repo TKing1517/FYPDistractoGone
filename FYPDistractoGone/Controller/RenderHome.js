@@ -1,9 +1,14 @@
 const { ipcRenderer } = require('electron')
+
+
+
 const BeginRestriction = document.getElementById('BeginRestriction')
 BeginRestriction.addEventListener('submit', (event) => {
     event.preventDefault()
+    const inputTimeForRestriction = document.getElementById('inputTimeForRestriction');
+    const TimerValue = inputTimeForRestriction.value;
+    ipcRenderer.send('BeginRestriction', TimerValue);
 
-    ipcRenderer.send('BeginRestriction')
 })
 
 ipcRenderer.on('Points', (event, UserPoints) => {

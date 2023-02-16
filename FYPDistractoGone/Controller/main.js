@@ -40,7 +40,7 @@ const createWindow = () => {
     }
   })
 
-  win.loadFile('View/SignUp.html')
+  win.loadFile('View/SignIn.html')
   win.on('close', (event) => {
     if (!canQuit) {
       event.preventDefault();
@@ -222,6 +222,7 @@ ipcMain.on('SignOut', (event) => {
     message: 'Signing out...',
     buttons: ['OK']
   })
+  // Clear block list.
   appsToBlock.length = 0;
   websitesURLs.length = 0;
   win.loadFile('View/SignIn.html')
@@ -237,7 +238,7 @@ ipcMain.on('SignOut', (event) => {
  
 })
 
-ipcMain.on('BeginRestriction', (event) => {
+ipcMain.on('BeginRestriction', (event,TimerValue) => {
   //Restriction cannot begin if its already running
   if (canQuit === false){
     dialog.showMessageBox({
@@ -246,6 +247,9 @@ ipcMain.on('BeginRestriction', (event) => {
       buttons: ['OK']
     })
   } else {
+    //convert timer value into something app can understand..
+    //Although the app should be restricting in minutes, for the sake of this project, will only be doing in seconds.
+    TimerValue = TimerValue*1000
     if (websitesURLs === undefined || websitesURLs.length == 0){
       if (appsToBlock === undefined || appsToBlock.length == 0){
         dialog.showMessageBox({
@@ -260,15 +264,15 @@ ipcMain.on('BeginRestriction', (event) => {
           buttons: ['OK']
         })
         canQuit = false;
-        //The restriction will begin and last for 30 seconds, 
+        //The restriction will begin and last for TimerValue seconds, 
         //after which the restriction will end and the user will be able to quit out of the app again.
         const timeoutId = setTimeout(function() {
           //time stored as 1000 per second. Will be converted to user-understandable wherever needed.
-          let UpdatedTime = student.TimeSpentRestricted + 30000;
+          let UpdatedTime = student.TimeSpentRestricted + TimerValue;
           //updating points.
           updateStudent({Points: student.Points,TimeSpentRestricted: UpdatedTime}, student.StudentID);
           canQuit = true;
-        }, 30000);
+        }, TimerValue);
       }      
     } else {
       dialog.showMessageBox({
@@ -279,12 +283,16 @@ ipcMain.on('BeginRestriction', (event) => {
       console.log(websitesURLs)
       blockWebsite(websitesURLs)
       canQuit = false;
-      //The restriction will begin and last for 30 seconds, 
+      //The restriction will begin and last for TimerValue seconds, 
       //after which the restriction will end and the user will be able to quit out of the app again.
       const timeoutId = setTimeout(function() {
+        //time stored as 1000 per second. Will be converted to user-understandable wherever needed.
+        let UpdatedTime = student.TimeSpentRestricted + TimerValue;
+        //updating points.
+        updateStudent({Points: student.Points,TimeSpentRestricted: UpdatedTime}, student.StudentID);
         canQuit = true;
         unblockWebsite(websitesURLs)
-      }, 30000);
+      }, TimerValue);
     }
   } 
 })
