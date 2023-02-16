@@ -216,6 +216,27 @@ ipcMain.on('FileSelector', (event) => {
   
 })
 
+ipcMain.on('SignOut', (event) => {
+  dialog.showMessageBox({
+    type: 'info',
+    message: 'Signing out...',
+    buttons: ['OK']
+  })
+  appsToBlock.length = 0;
+  websitesURLs.length = 0;
+  win.loadFile('View/SignIn.html')
+  // Reset the properties of the student instance to their default values
+  student = Object.assign(student, {
+    StudentID: null,
+    Username: "",
+    Password: "",
+    Email: "",
+    Points: 0,
+    TimeSpentRestricted: 0
+  });
+ 
+})
+
 ipcMain.on('BeginRestriction', (event) => {
   //Restriction cannot begin if its already running
   if (canQuit === false){
@@ -344,6 +365,7 @@ const blockWebsite = (website) => {
   const command = `echo 127.0.0.1 `
   if (currentOS === 'win32') {
     for (let i = 0; i < website.length; i++) {
+      //add websites to hosts file
       exec(command + website[i] + ` >> C:\\Windows\\System32\\drivers\\etc\\hosts`, (error, stdout, stderr) => {
         if (error) {
           console.error(`${error}`)

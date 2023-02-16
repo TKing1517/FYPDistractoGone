@@ -17,3 +17,9 @@ ipcRenderer.on('CurrentUser', (event, CurrentUser) => {
 function RefreshVariables() {
     ipcRenderer.send('RefreshVariables')
 }
+
+const SignOutbtn = document.getElementById('SignOutbtn')
+SignOutbtn.addEventListener('click', (event) => {
+    event.preventDefault()
+    ipcRenderer.send('SignOut')
+})

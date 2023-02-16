@@ -44,3 +44,9 @@ ipcRenderer.on('appsToBlock', (event, appsToBlock) => {
 function RefreshList() {
     ipcRenderer.send('RefreshList')
 }
+
+const SignOutbtn = document.getElementById('SignOutbtn')
+SignOutbtn.addEventListener('click', (event) => {
+    event.preventDefault()
+    ipcRenderer.send('SignOut')
+})
