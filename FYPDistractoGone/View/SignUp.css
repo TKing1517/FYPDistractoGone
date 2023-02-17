@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #e1e1e1;
+    background-color: #d7e3f1;
     font-family: Arial, sans-serif;
 }
 
@@ -26,12 +26,15 @@ body {
     order: -1;
     margin-right: 10px;
     background-color:#e74c3c;
+    margin-right: -10px;
 }
+
 
 #SignUpInput {
     margin: 0 auto;
+    margin-top: 80px;
     width: 300px;
-    background-color: white;
+    background-color: #a0c3eb;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -44,7 +47,7 @@ body {
 }
 
 #SignUpInput input[type="text"], #SignUpInput input[type="password"] {
-    width: 100%;
+    width: 90%;
     padding: 10px;
     font-size: 16px;
     margin-bottom: 20px;
