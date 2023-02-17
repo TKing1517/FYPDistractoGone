@@ -217,25 +217,33 @@ ipcMain.on('FileSelector', (event) => {
 })
 
 ipcMain.on('SignOut', (event) => {
-  dialog.showMessageBox({
-    type: 'info',
-    message: 'Signing out...',
-    buttons: ['OK']
-  })
-  // Clear block list.
-  appsToBlock.length = 0;
-  websitesURLs.length = 0;
-  win.loadFile('View/SignIn.html')
-  // Reset the properties of the student instance to their default values
-  student = Object.assign(student, {
-    StudentID: null,
-    Username: "",
-    Password: "",
-    Email: "",
-    Points: 0,
-    TimeSpentRestricted: 0
-  });
- 
+  //cannot sign out if restriction is running.
+  if (canQuit === false){
+    dialog.showMessageBox({
+      type: 'info',
+      message: 'Restriction is running..',
+      buttons: ['OK']
+    })
+  } else {
+    dialog.showMessageBox({
+      type: 'info',
+      message: 'Signing out...',
+      buttons: ['OK']
+    })
+    // Clear block list.
+    appsToBlock.length = 0;
+    websitesURLs.length = 0;
+    win.loadFile('View/SignIn.html')
+    // Reset the properties of the student instance to their default values
+    student = Object.assign(student, {
+      StudentID: null,
+      Username: "",
+      Password: "",
+      Email: "",
+      Points: 0,
+      TimeSpentRestricted: 0
+    });
+  }
 })
 
 ipcMain.on('BeginRestriction', (event,TimerValue) => {
