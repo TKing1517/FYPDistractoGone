@@ -1,7 +1,5 @@
 const { ipcRenderer } = require('electron')
 
-
-
 const BeginRestriction = document.getElementById('BeginRestriction')
 BeginRestriction.addEventListener('submit', (event) => {
     event.preventDefault()
@@ -12,7 +10,7 @@ BeginRestriction.addEventListener('submit', (event) => {
 })
 
 ipcRenderer.on('Points', (event, UserPoints) => {
-    document.getElementById('NPoints').innerText = ('Points: ' + UserPoints)
+    document.getElementById('NPoints').innerText = ('Current Points: ' + UserPoints)
 });
 
 ipcRenderer.on('CurrentUser', (event, CurrentUser) => {
@@ -33,4 +31,10 @@ const ExitBtn = document.getElementById('ExitBtn')
 ExitBtn.addEventListener('click', (event) => {
     event.preventDefault()
     ipcRenderer.send('ExitClicked')
+})
+
+const EditBlockListNav = document.getElementById('EditBlockListNav')
+EditBlockListNav.addEventListener('click', (event) => {
+    event.preventDefault()
+    ipcRenderer.send('EditBlockListNav')
 })

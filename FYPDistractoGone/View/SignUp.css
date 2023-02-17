@@ -3,6 +3,7 @@ body {
     padding: 0;
     background-color: #d7e3f1;
     font-family: Arial, sans-serif;
+    user-select: none;
 }
 
 .top-bar {
@@ -58,7 +59,8 @@ body {
 
 #CreateUserBtn {
     display: block;
-    width: 100%;
+    width: fit-content;
+    margin: 0 auto;
     background-color: #3833d3;
     color: white;
     padding: 10px;

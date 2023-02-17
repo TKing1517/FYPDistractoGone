@@ -56,3 +56,9 @@ ExitBtn.addEventListener('click', (event) => {
     event.preventDefault()
     ipcRenderer.send('ExitClicked')
 })
+
+const HomePageNav = document.getElementById('HomePageNav')
+HomePageNav.addEventListener('click', (event) => {
+    event.preventDefault()
+    ipcRenderer.send('HomePageNav')
+})

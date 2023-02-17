@@ -3,6 +3,7 @@ body {
     padding: 0;
     background-color: #d7e3f1;
     font-family: Arial, sans-serif;
+    user-select: none;
 }
   
 .top-bar {

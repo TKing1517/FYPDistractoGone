@@ -36,6 +36,7 @@ const createWindow = () => {
     width: 800,
     height: 600,
     frame: false, // Remove window frame
+    resizable: false, // set resizable to false
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -173,6 +174,14 @@ ipcMain.on('RefreshVariables', (event) => {
       CountForSignIn += 1
     }, 50);
   }
+})
+
+ipcMain.on('EditBlockListNav', (event) => {
+  win.loadFile('View/EditBlockList.html')
+})
+
+ipcMain.on('HomePageNav', (event) => {
+  win.loadFile('View/HomePage.html')
 })
 
 ipcMain.on('FileSelector', (event) => {

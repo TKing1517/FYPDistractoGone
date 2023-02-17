@@ -1,0 +1,117 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #d7e3f1;
+    font-family: Arial, sans-serif;
+}
+  
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #b2b2b7;
+    color: rgb(0, 0, 0);
+    font-size: 15px;
+    padding: 10px;
+}
+  
+.right {
+    position: absolute;
+    top: 100px;
+    right: 20px;
+    background-color: #b4c7e7;
+    border-radius: 10px;
+    width: fit-content;
+}
+  
+#NPoints {
+    color: #1d1f21;
+    padding: 20px;
+}
+
+.top-bar button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button#EditBlockListNav {
+    border: none;
+    background-color: transparent;
+    color: #000000;
+    font: bold;
+    cursor: pointer;
+    font-size: inherit;
+    padding: 0;
+    margin: 0;
+}
+  
+  
+.top-bar button:hover {
+    background-color: #c0392b;
+}
+  
+.top-bar p {
+    margin: 0;
+}
+  
+#BeginRestriction {
+    margin-top: 30px;
+    margin-left: 20px;
+    background-color: #b4c7e7;
+    padding: 20px;
+    border-radius: 10px;
+    width: fit-content;
+}
+
+#BeginRestriction label {
+    display: inline;
+    margin-bottom: 5px;
+    font-size: 16px;
+    color: rgb(0, 0, 0);
+}
+
+#BeginRestriction input[type="number"] {
+    width: 60px;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+#BeginRestriction button {
+    display: block;
+    background-color: #57cd3c;
+    color: rgb(0, 0, 0);
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#BeginRestriction button:hover {
+    background-color: #3f8d2e;
+}
+
+.bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #b2b2b7;
+    color: white;
+    font-size: 14px;
+    padding: 10px;
+}
+  
+.bottom-bar p {
+    margin: 0;
+}
+  
