@@ -50,3 +50,9 @@ SignOutbtn.addEventListener('click', (event) => {
     event.preventDefault()
     ipcRenderer.send('SignOut')
 })
+
+const ExitBtn = document.getElementById('ExitBtn')
+ExitBtn.addEventListener('click', (event) => {
+    event.preventDefault()
+    ipcRenderer.send('ExitClicked')
+})

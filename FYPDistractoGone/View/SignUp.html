@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        
+        <title>Sign Up</title>
+        <link rel="stylesheet" type="text/css" href="SignUp.css">
     </head>
     <body>
+        <div class="top-bar">
+            <h1>Sign Up</h1>
+            <button id="ExitBtn" type="click">Exit</button>
+        </div>
         <form id="SignUpInput">
             <label for="EmailLBL">Email:</label>
             <input type="text" id="InputEmail" required>
@@ -13,7 +18,9 @@
             <input type="text" id="InputPassword" required>
             <button id="CreateUserBtn" type="submit" style="background-color:#3833d3">Sign Up</button>
         </form>
-        <a href="SignIn.html">Already have account?</a>
+        <div class="bottom-bar">
+            <a href="SignIn.html">Already have account?</a>  
+        </div>
         <script src='../Controller/RenderSignUp.js'></script>
     </body>
 </html>

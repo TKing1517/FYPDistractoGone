@@ -1,17 +1,25 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        
+    <head class="TopBarSignIn">
+        <title>Sign In</title>
+        <link rel="stylesheet" type="text/css" href="SignIn.css">
     </head>
     <body>
+        <div class="top-bar">
+            <h1>Sign In</h1>
+            <button id="ExitBtn" type="click">Exit</button>
+        </div>
+        
         <form id="SignInInput">
             <label for="UserNameLBLS">Username:</label>
             <input type="text" id="InputUserNameS" required>
             <label for="PasswordLBLS">Password:</label>
             <input type="text" id="InputPasswordS" required>
-            <button id="SignInBtn" type="submit" style="background-color:#3833d3">Sign In</button>
+            <button id="SignInBtn" type="submit">Sign In</button>
         </form>
-        <a href="SignUp.html">Don't have account?</a>
+        <div class="bottom-bar">
+            <a href="SignUp.html">Don't have account?</a>
+        </div>
         <script src='../Controller/RenderSignIn.js'></script>
     </body>
 </html>

@@ -7,3 +7,9 @@ SignUpInput.addEventListener('submit', (event) => {
     const Password = document.getElementById('InputPassword').value
     ipcRenderer.send('CreateUser',Email,UserName,Password)
 })
+
+const ExitBtn = document.getElementById('ExitBtn')
+ExitBtn.addEventListener('click', (event) => {
+    event.preventDefault()
+    ipcRenderer.send('ExitClicked')
+})

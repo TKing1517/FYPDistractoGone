@@ -6,3 +6,9 @@ SignInInput.addEventListener('submit', (event) => {
     const Password = document.getElementById('InputPasswordS').value
     ipcRenderer.send('SignIn',UserName,Password)
 })
+
+const ExitBtn = document.getElementById('ExitBtn')
+ExitBtn.addEventListener('click', (event) => {
+    event.preventDefault()
+    ipcRenderer.send('ExitClicked')
+})

@@ -33,10 +33,13 @@ if (currentOS === 'darwin') {
 let win;
 const createWindow = () => {
   win = new BrowserWindow({
+    width: 800,
+    height: 600,
+    frame: false, // Remove window frame
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-      enableRemoteModule: true
+      enableRemoteModule: true,
     }
   })
 
@@ -44,6 +47,11 @@ const createWindow = () => {
   win.on('close', (event) => {
     if (!canQuit) {
       event.preventDefault();
+      dialog.showMessageBox({
+        type: 'info',
+        message: 'Cannot quit out of app right now.',
+        buttons: ['OK']
+      })
     }
   });
   win.setMenu(null)
@@ -245,6 +253,11 @@ ipcMain.on('SignOut', (event) => {
     });
   }
 })
+
+ipcMain.on('ExitClicked', (event) => {
+  app.quit();
+})
+
 
 ipcMain.on('BeginRestriction', (event,TimerValue) => {
   //Restriction cannot begin if its already running
