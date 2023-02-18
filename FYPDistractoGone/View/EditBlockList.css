@@ -1,0 +1,162 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #d7e3f1;
+    font-family: Arial, sans-serif;
+}
+  
+/* style the top bar */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #b2b2b7;
+    color: rgb(0, 0, 0);
+    font-size: 15px;
+    padding: 10px;
+}
+
+.top-bar button {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.top-bar button:hover {
+    background-color: #c0392b;
+}
+
+.top-bar p {
+    margin: 0;
+}
+
+button#HomePageNav {
+    border: none;
+    background-color: transparent;
+    color: #000000;
+    font: bold;
+    cursor: pointer;
+    font-size: inherit;
+    padding: 0;
+    margin: 0;
+}
+
+
+  
+/* style the main content */
+.main-content {
+    flex: 1;
+    display: flex;
+    padding: 30px;
+}
+  
+/* style the left column of the main content */
+.main-content-AddRemove {
+    padding-top: 12px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-right: 30px;
+    background-color: #b4c7e7;
+    border-radius: 10px;
+    width: fit-content;
+    align-items: center;
+}
+  
+/* style the input fields and buttons */
+input[type="text"]{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    margin-left: 25px;
+}
+
+#SubmitWebsiteInput label {
+    margin-left: 25px;
+}
+
+#DeleteWebsiteInput label {
+    margin-left: 25px;
+}
+  
+/* style the submit buttons */
+[type="submit"] {
+    background-color: #57cd3c;
+    color: rgb(0, 0, 0);
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+  
+[type="submit"]:hover {
+    background-color: #3f8d2e;
+}
+  
+/* style the file selector button */
+#FileSelector {
+    margin-top: 5px;
+    background-color: #57cd3c;
+    color: rgb(0, 0, 0);
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+  
+#FileSelector:hover {
+    background-color: #3f8d2e;
+}
+  
+/* style the right column of the main content */
+.main-content-AppUrlList {
+    height: 280px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll; /* Make the container scrollable */
+    background-color: #b4c7e7;
+    border-radius: 10px;
+    padding-left: 10px;
+}
+  
+/* style the list headings */
+.main-content-AppUrlList p {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+  
+/* style the list items */
+#ListOfURLs li,
+#ListOfApps li {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+  
+.bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #b2b2b7;
+    color: white;
+    font-size: 14px;
+    padding: 10px;
+}
+  
+.bottom-bar p {
+    margin: 0;
+}
+  

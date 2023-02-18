@@ -160,6 +160,7 @@ ipcMain.on('submit-websiteU', (event, website) => {
 ipcMain.on('RefreshList', (event) => {
   event.reply('websitesURLs', websitesURLs);
   event.reply('appsToBlock', appsToBlock);
+  event.reply('CurrentUser', student.Username);
 })
 
 ipcMain.on('RefreshVariables', (event) => {

@@ -3,30 +3,46 @@
     <head>
         <meta charset="UTF-8">
         <title id="EditBlockListTitle">Add to Website</title>
+        <link rel="stylesheet" type="text/css" href="EditBlockList.css">
     </head>
     <body onload="RefreshList()">
-      <button id="ExitBtn" type="click" style="background-color:#e74c3c">Exit</button>
-      <button id="HomePageNav" type="click" style="background-color:#e74c3c">Navigate to Home Page</button>
-      <form id="SubmitWebsiteInput">
-        <label for="name">Website to be blocked:</label>
-        <input type="text" id="InputWebsite" required>
-        <button id="InputWebsitebtn" type="submit" style="background-color:#e74c3c">Submit</button>
-      </form>
+      <div class="top-bar">
+        <button id="ExitBtn" type="click">Exit</button>
+        <button id="HomePageNav" type="click">Navigate to Home Page</button>
+        <p id="CurrentUser">Signed in as: ..waiting</p>
+        <button id="SignOutbtn" type="click">Sign Out</button>
+      </div>
+      
+      <div class="main-content">
+        <div class="main-content-AddRemove">
+          <form id="SubmitWebsiteInput">
+            <label for="name">Website to be blocked:</label>
+            <input type="text" id="InputWebsite" required>
+            <button id="InputWebsitebtn" type="submit">Submit</button>
+          </form>
     
-      <form id="DeleteWebsiteInput">
-        <label for="name">Website to be unlocked:</label>
-        <input type="text" id="InputWebsiteU" required>
-        <button id="InputWebsiteUbtn" type="submit" style="background-color:#e74c3c">Submit</button>
-      </form>
+          <form id="DeleteWebsiteInput">
+            <label for="name">Website to be unblocked:</label>
+            <input type="text" id="InputWebsiteU" required>
+            <button id="InputWebsiteUbtn" type="submit">Submit</button>
+          </form>
 
-      <p>Select app .exe file to block/unblock</p>
-      <button id="FileSelector" type="click" style="background-color:#e74c3c">Select</button>
+          <button id="FileSelector" type="click">Add/Remove App</button>
 
-      <p>List of Blocked Websites:</p>
-      <ul id="ListOfURLs"></ul>
-      <p>List of Blocked Apps:</p>
-      <ul id="ListOfApps"></ul>
-      <button id="SignOutbtn" type="click" style="background-color:#e74c3c">Sign Out</button>
+        </div>
+        <div class="main-content-AppUrlList">
+          <p>List of Blocked Websites:</p>
+          <ul id="ListOfURLs"></ul>
+          <p>List of Blocked Apps:</p>
+          <ul id="ListOfApps"></ul>
+        </div>
+      </div>
+      
+      
+      <div class="bottom-bar">
+        <p>2023 DistractoGone. All rights reserved.</p>
+      </div>
+      
       <script src='../Controller/RenderEdit.js'></script>
     </body>
 </html>

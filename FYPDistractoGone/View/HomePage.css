@@ -58,10 +58,17 @@ button#EditBlockListNav {
 .top-bar p {
     margin: 0;
 }
+
+#devNote{
+    position: absolute;
+    bottom: 130px;
+    left: 20px;
+}
   
 #BeginRestriction {
-    margin-top: 30px;
-    margin-left: 20px;
+    position: absolute;
+    top: 105px;
+    left: 20px;
     background-color: #b4c7e7;
     padding: 20px;
     border-radius: 10px;
