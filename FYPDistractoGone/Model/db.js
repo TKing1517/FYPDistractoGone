@@ -102,6 +102,15 @@ function getBlockedAppsFromDB(StudentID) {
   return appsToBlock;
 }
 
+function insertIntoPurchases(StudentID,ItemID){
+  let insertData = {StudentID: StudentID,ItemID: ItemID};
+  let sql = `INSERT INTO PurchasedItems SET ?`;
+  let query = connection.query(sql, insertData,(err, result) => {
+      if(err) throw err;
+      console.log(`Data inserted into the PurchasedItems table`);
+  });
+}
+
 module.exports = {
   connection,
   selectFromTable,
@@ -112,7 +121,8 @@ module.exports = {
   insertAppIntoBlocked,
   DeleteAppFromBlocked,
   getBlockedAppsFromDB,
-  getBlockedURLsFromDB
+  getBlockedURLsFromDB,
+  insertIntoPurchases
 };
 
 

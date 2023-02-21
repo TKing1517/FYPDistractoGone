@@ -2,9 +2,10 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const path = require('path');
 const { exec } = require('child_process')
 const fs = require('fs')
-const {connection,selectFromTable,insertIntoStudent,updateStudent,insertURLintoBlocked,DeleteURLFromBlocked,insertAppIntoBlocked,DeleteAppFromBlocked,getBlockedAppsFromDB,getBlockedURLsFromDB} = require('../Model/db.js');
+const {connection,selectFromTable,insertIntoStudent,updateStudent,insertURLintoBlocked,DeleteURLFromBlocked,insertAppIntoBlocked,DeleteAppFromBlocked,getBlockedAppsFromDB,getBlockedURLsFromDB,insertIntoPurchases} = require('../Model/db.js');
 const Student = require('../Model/Student');
 const ShopItem = require('../Model/ShopItem');
+const { userInfo } = require('os');
 
 // selectFromTable("Student", "*");
 // selectFromTable("Student", "*","WHERE StudentID = 1");
@@ -129,7 +130,31 @@ ipcMain.on('submit-website', (event, website) => {
       buttons: ['OK']
     })
   } else {
-    const hostname = new URL(website).hostname;
+    let url;
+    try {
+      url = new URL(website);
+    } catch (error) {
+      // If the URL is invalid, try adding the https protocol and parsing again
+      try {
+        url = new URL('https://' + website);
+      } catch (error) {
+        // If the URL is still invalid, show an error message
+        dialog.showMessageBox({
+          type: 'info',
+          message: 'Invalid URL',
+          buttons: ['OK']
+        });
+        return;
+      }
+    }
+
+    let hostname = url.hostname;
+
+    // Add ".com" to the end of the hostname if it has no top-level domain
+    if (!/\.[^./]{2,}$/.test(hostname)) {
+      hostname += '.com';
+    }
+
     if (websitesURLs.includes(hostname)) {
       dialog.showMessageBox({
         type: 'info',
@@ -137,13 +162,18 @@ ipcMain.on('submit-website', (event, website) => {
         buttons: ['OK']
       })
     } else {
-      insertURLintoBlocked(student.StudentID,hostname);
+      insertURLintoBlocked(student.StudentID, hostname);
       websitesURLs.push(hostname);
       console.log(websitesURLs)
       event.reply('websitesURLs', websitesURLs);
     }
   }
 })
+
+
+
+
+
 
 ipcMain.on('submit-websiteU', (event, website) => {
   if (canQuit === false){
@@ -153,7 +183,30 @@ ipcMain.on('submit-websiteU', (event, website) => {
       buttons: ['OK']
     })
   } else {
-    const hostname = new URL(website).hostname;
+    let url;
+    try {
+      url = new URL(website);
+    } catch (error) {
+      // If the URL is invalid, try adding the https protocol and parsing again
+      try {
+        url = new URL('https://' + website);
+      } catch (error) {
+        // If the URL is still invalid, show an error message
+        dialog.showMessageBox({
+          type: 'info',
+          message: 'Invalid URL',
+          buttons: ['OK']
+        });
+        return;
+      }
+    }
+
+    let hostname = url.hostname;
+    if (!hostname.includes('.')) {
+      // If the hostname doesn't contain a dot, add .com to the end
+      hostname = hostname + '.com';
+    }
+
     if (websitesURLs.includes(hostname)) {
       DeleteURLFromBlocked(student.StudentID,hostname);
       websitesURLs = websitesURLs.filter((item) => item !== hostname);
@@ -168,6 +221,8 @@ ipcMain.on('submit-websiteU', (event, website) => {
     }
   }
 })
+
+
 
 ipcMain.on('RefreshList', (event) => {
   event.reply('websitesURLs', websitesURLs);
@@ -204,12 +259,54 @@ ipcMain.on('HomePageNav', (event) => {
 })
 
 ipcMain.on('ShopNav', (event) => {
-  win.loadFile('View/ShopPage.html')
+  if (canQuit === false){
+    dialog.showMessageBox({
+      type: 'info',
+      message: 'Cannot visit shop while restriction is active..',
+      buttons: ['OK']
+    })
+  } else {
+    win.loadFile('View/ShopPage.html')
+  }
 })
 
-ipcMain.on('ShopItemPurchase', (event,PurchasItemID) => {
-  console.log(PurchasItemID)
-})
+ipcMain.on('ShopItemPurchase', (event, PurchaseItemID) => {
+  //find details of the purchased item.
+  for (let i = 0; i < ShopItems.length; i++) {
+    if (ShopItems[i].ItemID === PurchaseItemID) {
+      selectFromTable(`PurchasedItems`, "*",`StudentID = "${student.StudentID}" AND ItemID = "${ShopItems[i].ItemID}"`,(results) => {
+        //check if student already has item.
+        if(results.length === 0) {
+          if (student.Points < ShopItems[i].PointCost){
+            //check if student posseses the points.
+            dialog.showMessageBox({
+              type: 'info',
+              message: 'You do not have enough points to buy this item.',
+              buttons: ['OK']
+            })
+          } else {
+            student.Points = student.Points - ShopItems[i].PointCost;
+            updateStudent({Points: student.Points}, student.StudentID);
+            insertIntoPurchases(student.StudentID,ShopItems[i].ItemID)
+            dialog.showMessageBox({
+              type: 'info',
+              message: 'Item bought. You have ' + student.Points + ' points remaining.',
+              buttons: ['OK']
+            })
+            
+            win.loadFile('View/ShopPage.html')
+          }
+        } else {
+          dialog.showMessageBox({
+            type: 'info',
+            message: 'You already possess this item.',
+            buttons: ['OK']
+          })
+        }
+      });
+    }
+  }
+});
 
 ipcMain.on('FileSelector', (event) => {
   if (canQuit === false){
