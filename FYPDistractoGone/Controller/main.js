@@ -4,6 +4,7 @@ const { exec } = require('child_process')
 const fs = require('fs')
 const {connection,selectFromTable,insertIntoStudent,updateStudent,insertURLintoBlocked,DeleteURLFromBlocked,insertAppIntoBlocked,DeleteAppFromBlocked,getBlockedAppsFromDB,getBlockedURLsFromDB} = require('../Model/db.js');
 const Student = require('../Model/Student');
+const ShopItem = require('../Model/ShopItem');
 
 // selectFromTable("Student", "*");
 // selectFromTable("Student", "*","WHERE StudentID = 1");
@@ -17,6 +18,7 @@ let GivePoints;
 let isIntervalActive = false;
 let student;
 let CountForSignIn = 0;
+let ShopItems = [];
 
 
 
@@ -60,6 +62,16 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
   createWindow()
+  selectFromTable(`PointsShop`, "*",`ItemID > 0`,(results) => {
+    for (let i = 0; i < results.length; i++) {
+      const item = results[i];
+      const shopItem = new ShopItem(item.ItemID, item.ItemName, item.ItemDescription, item.PointCost);
+      ShopItems.push(shopItem); // add the new ShopItem object to the array
+    }
+    console.log(ShopItems); // display the array of ShopItem objects
+      
+  
+  });
 })
 
 ipcMain.on('CreateUser', (event,Email,UserName,Password) => {
@@ -166,6 +178,7 @@ ipcMain.on('RefreshList', (event) => {
 ipcMain.on('RefreshShop', (event) => {
   event.reply('Points', student.Points);
   event.reply('CurrentUser', student.Username);
+  event.reply('ShopItems',ShopItems);
 })
 
 ipcMain.on('RefreshVariables', (event) => {
@@ -192,6 +205,10 @@ ipcMain.on('HomePageNav', (event) => {
 
 ipcMain.on('ShopNav', (event) => {
   win.loadFile('View/ShopPage.html')
+})
+
+ipcMain.on('ShopItemPurchase', (event,PurchasItemID) => {
+  console.log(PurchasItemID)
 })
 
 ipcMain.on('FileSelector', (event) => {
