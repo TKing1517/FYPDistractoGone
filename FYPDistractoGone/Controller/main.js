@@ -163,6 +163,11 @@ ipcMain.on('RefreshList', (event) => {
   event.reply('CurrentUser', student.Username);
 })
 
+ipcMain.on('RefreshShop', (event) => {
+  event.reply('Points', student.Points);
+  event.reply('CurrentUser', student.Username);
+})
+
 ipcMain.on('RefreshVariables', (event) => {
   if (CountForSignIn > 0){
     event.reply('Points', student.Points);
@@ -183,6 +188,10 @@ ipcMain.on('EditBlockListNav', (event) => {
 
 ipcMain.on('HomePageNav', (event) => {
   win.loadFile('View/HomePage.html')
+})
+
+ipcMain.on('ShopNav', (event) => {
+  win.loadFile('View/ShopPage.html')
 })
 
 ipcMain.on('FileSelector', (event) => {

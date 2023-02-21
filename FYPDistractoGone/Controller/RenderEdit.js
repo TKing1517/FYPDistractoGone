@@ -63,6 +63,12 @@ HomePageNav.addEventListener('click', (event) => {
     ipcRenderer.send('HomePageNav')
 })
 
+const ShopNav = document.getElementById('ShopNav')
+ShopNav.addEventListener('click', (event) => {
+    event.preventDefault()
+    ipcRenderer.send('ShopNav')
+})
+
 ipcRenderer.on('CurrentUser', (event, CurrentUser) => {
     document.getElementById('CurrentUser').innerText = ('Signed in as: ' + CurrentUser)
 });

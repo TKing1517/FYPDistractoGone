@@ -34,7 +34,7 @@ body {
     margin: 0;
 }
 
-button#HomePageNav {
+button#HomePageNav,button#ShopNav {
     border: none;
     background-color: transparent;
     color: #000000;

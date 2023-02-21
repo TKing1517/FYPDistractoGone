@@ -39,7 +39,7 @@ body {
     transition: background-color 0.2s;
 }
 
-button#EditBlockListNav {
+button#EditBlockListNav,button#ShopNav {
     border: none;
     background-color: transparent;
     color: #000000;
@@ -49,6 +49,7 @@ button#EditBlockListNav {
     padding: 0;
     margin: 0;
 }
+
   
   
 .top-bar button:hover {

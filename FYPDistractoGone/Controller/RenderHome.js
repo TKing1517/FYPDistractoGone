@@ -38,3 +38,9 @@ EditBlockListNav.addEventListener('click', (event) => {
     event.preventDefault()
     ipcRenderer.send('EditBlockListNav')
 })
+
+const ShopNav = document.getElementById('ShopNav')
+ShopNav.addEventListener('click', (event) => {
+    event.preventDefault()
+    ipcRenderer.send('ShopNav')
+})
