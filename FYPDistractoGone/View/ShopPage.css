@@ -35,14 +35,7 @@ body {
 }
 
 button#EditBlockListNav,button#HomePageNav {
-    border: none;
-    background-color: transparent;
-    color: #000000;
-    font: bold;
-    cursor: pointer;
-    font-size: inherit;
-    padding: 0;
-    margin: 0;
+    background-color: #69696b;
 }
 
 .right {
