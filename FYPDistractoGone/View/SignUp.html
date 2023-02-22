@@ -11,11 +11,11 @@
         </div>
         <form id="SignUpInput">
             <label for="EmailLBL">Email:</label>
-            <input type="text" id="InputEmail" required>
+            <input type="email" id="InputEmail" required maxlength="50" >
             <label for="UserNameLBL">Username:</label>
-            <input type="text" id="InputUserName" required>
+            <input type="text" id="InputUserName" required maxlength="50" pattern="[a-zA-Z0-9]+" title="Acceptable characters: aA-Zz,0-9">
             <label for="PasswordLBL">Password:</label>
-            <input type="text" id="InputPassword" required>
+            <input type="text" id="InputPassword" required maxlength="50" pattern="[a-zA-Z0-9]+" title="Acceptable characters: aA-Zz,0-9">
             <button id="CreateUserBtn" type="submit" style="background-color:#3833d3">Sign Up</button>
         </form>
         <div class="bottom-bar">

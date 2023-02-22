@@ -12,9 +12,9 @@
         
         <form id="SignInInput">
             <label for="UserNameLBLS">Username:</label>
-            <input type="text" id="InputUserNameS" required value="TestingUsername"> 
+            <input type="text" id="InputUserNameS" required value="TestingUsername" maxlength="50" pattern="[a-zA-Z0-9]+" title="Acceptable characters: aA-zZ,0-9"> 
             <label for="PasswordLBLS">Password:</label>
-            <input type="text" id="InputPasswordS" required value="TestingPassword">
+            <input type="text" id="InputPasswordS" required value="TestingPassword" maxlength="50" pattern="[a-zA-Z0-9]+" title="Acceptable characters: aA-zZ,0-9">
             <button id="SignInBtn" type="submit">Sign In</button>
         </form>
         <div class="bottom-bar">

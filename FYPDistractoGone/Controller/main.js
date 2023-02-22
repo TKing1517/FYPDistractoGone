@@ -170,11 +170,6 @@ ipcMain.on('submit-website', (event, website) => {
   }
 })
 
-
-
-
-
-
 ipcMain.on('submit-websiteU', (event, website) => {
   if (canQuit === false){
     dialog.showMessageBox({

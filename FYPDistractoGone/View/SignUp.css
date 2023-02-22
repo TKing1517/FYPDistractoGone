@@ -57,7 +57,7 @@ body {
     font-size: 16px;
 }
 
-#SignUpInput input[type="text"], #SignUpInput input[type="password"] {
+#SignUpInput input[type="text"], #SignUpInput input[type="password"], #SignUpInput input[type="email"] {
     width: 90%;
     padding: 10px;
     font-size: 16px;
